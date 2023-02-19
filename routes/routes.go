@@ -14,6 +14,6 @@ func NewHandlerUser(Service user.UserService, e *echo.Echo) {
 	}
 
 	e.POST("/register", handlers.Register, middlewares.JWTMiddleware())
-	e.POST("/user/login", handlers.Login, middlewares.JWTMiddleware())
+	e.POST("/login", handlers.Login)
 
 }
