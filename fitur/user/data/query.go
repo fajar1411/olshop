@@ -20,8 +20,15 @@ func NewUser(db *gorm.DB) user.UserData {
 }
 
 // Login implements user.UserData
-func (*userData) Login(password string) (user.UserEntites, error) {
-	panic("unimplemented")
+func (ud *userData) Login(email string) (user.UserEntites, error) {
+	res := User{}
+
+	if err := ud.db.Where("email = ?", email).First(&res).Error; err != nil {
+		log.Println("login query error", err.Error())
+		return user.UserEntites{}, errors.New("data not found")
+	}
+
+	return ToCore(res), nil
 }
 
 // Register implements user.UserData

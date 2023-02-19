@@ -1,4 +1,4 @@
-package token
+package scripts
 
 import (
 	"errors"
@@ -24,6 +24,13 @@ func CheckPassword(hashed, password string) error {
 	if err := bcrypt.CompareHashAndPassword([]byte(hashed), []byte(password)); err != nil {
 		log.Println("login compare", err.Error())
 		return errors.New("password tidak sesuai ")
+	}
+	return nil
+}
+func ComparePassword(hashedPassword, password string) error {
+	password = Bcript(password)
+	if hashedPassword != password {
+		return errors.New("password not match")
 	}
 	return nil
 }

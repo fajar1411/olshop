@@ -13,6 +13,6 @@ type UserService interface {
 }
 
 type UserData interface {
-	Login(password string) (UserEntites, error)
+	Login(email string) (UserEntites, error)
 	Register(newUser UserEntites) (UserEntites, error)
 }

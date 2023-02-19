@@ -22,3 +22,11 @@ func FromUserCore(dataCore user.UserEntites) User { //fungsi yang mengambil data
 	}
 	return userGorm
 }
+func ToCore(data User) user.UserEntites {
+	return user.UserEntites{
+		ID:       data.ID,
+		Nama:     data.Nama,
+		Email:    data.Email,
+		Password: data.Password,
+	}
+}
