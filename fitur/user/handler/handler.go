@@ -4,6 +4,7 @@ import (
 	"net/http"
 	"toko/fitur/user"
 	"toko/helper"
+	"toko/middlewares"
 
 	"github.com/labstack/echo/v4"
 )
@@ -39,5 +40,15 @@ func (Ud *UserHandler) Login(c echo.Context) error {
 		return c.JSON(helper.PesanGagalHelper(err.Error()))
 	}
 	dataResp := ToLoginRespon(res, token)
-	return c.JSON(http.StatusOK, helper.PesanDataBerhasilHelper("success add data", dataResp))
+	return c.JSON(http.StatusOK, helper.PesanDataBerhasilHelper("Login berhasil", dataResp))
+}
+func (Ud *UserHandler) Profile(c echo.Context) error {
+	id := middlewares.ExtractTokenUserId(c)
+
+	res, err := Ud.UserServices.Profile(id)
+	if err != nil {
+		return c.JSON(helper.PesanGagalHelper(err.Error()))
+	}
+	dataResp := ToResponses(res)
+	return c.JSON(http.StatusOK, helper.PesanDataBerhasilHelper("Melihat Profile Berhasil", dataResp))
 }
