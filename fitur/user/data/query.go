@@ -1,6 +1,9 @@
 package data
 
 import (
+	"errors"
+	"log"
+	"strings"
 	"toko/fitur/user"
 
 	"gorm.io/gorm"
@@ -22,6 +25,20 @@ func (*userData) Login(password string) (user.UserEntites, error) {
 }
 
 // Register implements user.UserData
-func (*userData) Register(newUser user.UserEntites) (user.UserEntites, error) {
-	panic("unimplemented")
+func (Ud *userData) Register(newUser user.UserEntites) (user.UserEntites, error) {
+	userGorm := FromUserCore(newUser)
+
+	tx := Ud.db.Create(&userGorm) // proses insert data
+
+	if tx.Error != nil {
+		log.Println("register query error", tx.Error.Error())
+		msg := ""
+		if strings.Contains(tx.Error.Error(), "Duplicate") {
+			msg = "data is duplicated"
+		} else {
+			msg = "server error"
+		}
+		return user.UserEntites{}, errors.New(msg)
+	}
+	return newUser, nil
 }

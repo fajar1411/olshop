@@ -35,8 +35,8 @@ func PesanSuksesHelper(msg string) map[string]any {
 }
 func PesanDataBerhasilHelper(msg string, data any) map[string]any {
 	return map[string]any{
-		"Status": "data berhasil",
-		"MSG":    msg,
-		"data":   data,
+
+		"data": data,
+		"MSG":  msg,
 	}
 }
