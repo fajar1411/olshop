@@ -24,13 +24,13 @@ func ToRegisterResponse(data user.UserEntites) UserReponse {
 	}
 }
 
-// func ToResponses(data user.UserEntites) RegisterResponse {
-// 	return RegisterResponse{
+func ToResponses(data user.UserEntites) UserReponse {
+	return UserReponse{
 
-// 		Nama:  data.Nama,
-// 		Email: data.Email,
-// 	}
-// }
+		Nama:  data.Nama,
+		Email: data.Email,
+	}
+}
 func ToLoginRespon(data user.UserEntites, token string) LoginResponse {
 	return LoginResponse{
 

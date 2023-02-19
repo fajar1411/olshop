@@ -10,9 +10,11 @@ type UserEntites struct {
 type UserService interface {
 	Login(email, password string) (string, UserEntites, error)
 	Register(newUser UserEntites) (UserEntites, error)
+	Profile(id int) (UserEntites, error)
 }
 
 type UserData interface {
 	Login(email string) (UserEntites, error)
 	Register(newUser UserEntites) (UserEntites, error)
+	Profile(id int) (UserEntites, error)
 }

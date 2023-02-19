@@ -30,3 +30,10 @@ func ToCore(data User) user.UserEntites {
 		Password: data.Password,
 	}
 }
+func (dataModel *User) ModelsToCore() user.UserEntites { //fungsi yang mengambil data dari  user gorm(model.go)  dan merubah data ke entities usercore
+	return user.UserEntites{
+		Nama:     dataModel.Nama,
+		Email:    dataModel.Email, //mapping data core ke data gorm model
+		Password: dataModel.Password,
+	}
+}

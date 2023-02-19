@@ -44,7 +44,7 @@ func (Uc *userCase) Login(email string, password string) (string, user.UserEntit
 	}
 
 	//Token expires after 1 hour
-	token, _ := middlewares.GenerateJWT(int(res.ID))
+	token, _ := middlewares.CreateToken(int(res.ID))
 
 	return token, res, nil
 
@@ -70,5 +70,22 @@ func (Uc *userCase) Register(newUser user.UserEntites) (user.UserEntites, error)
 		return user.UserEntites{}, errors.New(msg)
 	}
 
+	return res, nil
+}
+
+// Profile implements user.UserService
+func (Uc *userCase) Profile(id int) (user.UserEntites, error) {
+
+	res, err := Uc.qry.Profile(id)
+	if err != nil {
+		log.Println(err)
+		msg := ""
+		if strings.Contains(err.Error(), "not found") {
+			msg = "user tidak ditemukan harap login lagi"
+		} else {
+			msg = "terdapat masalah pada server"
+		}
+		return user.UserEntites{}, errors.New(msg)
+	}
 	return res, nil
 }
