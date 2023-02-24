@@ -1,47 +1,39 @@
 package validasi
 
 import (
-	"errors"
-	"log"
-	"strings"
-	user "toko/fitur/user"
+	"fmt"
 
 	"github.com/go-playground/validator/v10"
 )
 
-var validate *validator.Validate
+func ValidationErrorHandle(err error) string {
+	var message string
 
-type RegisterValidate struct {
-	Name     string `validate:"required"`
-	Email    string `validate:"required,email" isuniqe:"users,email"`
-	Password string
-}
-
-func ToRegister(data user.UserEntites) RegisterValidate {
-	return RegisterValidate{
-		Name:     data.Nama,
-		Email:    data.Email,
-		Password: data.Password,
-	}
-}
-
-func Validasi(data interface{}) error {
-	validate = validator.New()
-	err := validate.Struct(data)
-	if err != nil {
-		log.Println(err)
-		if _, ok := err.(*validator.InvalidValidationError); ok {
-			log.Println(err)
+	castedObject, ok := err.(validator.ValidationErrors)
+	if ok {
+		for _, v := range castedObject {
+			switch v.Tag() {
+			case "required":
+				message = fmt.Sprintf("%s Ada Tabel yang Kosong, Harap Diisi !!!", v.Field())
+			case "min":
+				message = fmt.Sprintf("%s Input Minimal %s character !!!", v.Field(), v.Param())
+			case "max":
+				message = fmt.Sprintf("%s Input Maksimal %s character !!!", v.Field(), v.Param())
+			case "lte":
+				message = fmt.Sprintf("%s Input tidak boleh di bawah %s !!!", v.Field(), v.Param())
+			case "gte":
+				message = fmt.Sprintf("%s Input tidak boleh di atas %s !!!", v.Field(), v.Param())
+			case "numeric":
+				message = fmt.Sprintf("%s Input Harus Numeric !!!", v.Field())
+			case "url":
+				message = fmt.Sprintf("%s Input Harus Url !!!", v.Field())
+			case "email":
+				message = fmt.Sprintf("%s Input Harus Email !!!", v.Field())
+			case "password":
+				message = fmt.Sprintf("%s Input value must be filled", v.Field())
+			}
 		}
-		msg := ""
-		if strings.Contains(err.Error(), "required") {
-			msg = "field required wajib diisi"
-		} else if strings.Contains(err.Error(), "email") {
-			msg = "format email salah"
-		} else if strings.Contains(err.Error(), "duplicated") {
-			msg = "email sudah terdaftar"
-		}
-		return errors.New(msg)
 	}
-	return nil
+
+	return message
 }

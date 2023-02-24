@@ -52,3 +52,18 @@ func (Ud *UserHandler) Profile(c echo.Context) error {
 	dataResp := ToResponses(res)
 	return c.JSON(http.StatusOK, helper.PesanDataBerhasilHelper("Melihat Profile Berhasil", dataResp))
 }
+
+func (Ud *UserHandler) Update(c echo.Context) error {
+	input := UpdateRequest{}
+	if err := c.Bind(&input); err != nil {
+		return c.JSON(http.StatusBadRequest, "format inputan salah")
+	}
+	id := middlewares.ExtractTokenUserId(c)
+
+	res, err := Ud.UserServices.UpdateUser(id, UpdateRequestToUserCore(input))
+	if err != nil {
+		return c.JSON(helper.PesanGagalHelper(err.Error()))
+	}
+	dataResp := UpdateRespons(res)
+	return c.JSON(http.StatusOK, helper.PesanDataBerhasilHelper("Update berhasil", dataResp))
+}

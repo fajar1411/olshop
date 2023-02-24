@@ -35,7 +35,7 @@ func (ud *userData) Login(email string) (user.UserEntites, error) {
 
 // Register implements user.UserData
 func (Ud *userData) Register(newUser user.UserEntites) (user.UserEntites, error) {
-	userGorm := FromUserCore(newUser)
+	userGorm := FromEntities(newUser)
 
 	tx := Ud.db.Create(&userGorm) // proses insert data
 
@@ -60,4 +60,24 @@ func (Ud *userData) Profile(id int) (user.UserEntites, error) {
 	}
 	gorms := users.ModelsToCore()
 	return gorms, nil
+}
+
+// UpdateUser implements user.UserData
+func (Ud *userData) UpdateUser(id int, Updata user.UserEntites) (user.UserEntites, error) {
+	var users User
+	datacore := FromEntities(Updata)
+	qry := Ud.db.Model(&users).Where("id = ?", id).Updates(&datacore)
+
+	affrows := qry.RowsAffected
+	if affrows == 0 {
+		log.Println("no rows affected")
+		return user.UserEntites{}, errors.New("no data updated")
+	}
+	err := qry.Error
+	if err != nil {
+		log.Println("update user query error", err.Error())
+		return user.UserEntites{}, err
+	}
+
+	return ToCore(datacore), nil
 }

@@ -6,6 +6,11 @@ type UserReponse struct {
 	Nama  string `json:"name"`
 	Email string `json:"email"`
 }
+type UpdateReponse struct {
+	Nama     string `json:"name"`
+	Email    string `json:"email"`
+	Password string `json:"Password"`
+}
 
 // type RegisterResponse struct {
 // 	Nama  string `json:"name"`
@@ -37,5 +42,13 @@ func ToLoginRespon(data user.UserEntites, token string) LoginResponse {
 		Nama:  data.Nama,
 		Email: data.Email,
 		Token: token,
+	}
+}
+func UpdateRespons(data user.UserEntites) UpdateReponse {
+	return UpdateReponse{
+
+		Nama:     data.Nama,
+		Email:    data.Email,
+		Password: data.Password,
 	}
 }

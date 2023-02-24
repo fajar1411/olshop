@@ -6,11 +6,23 @@ type LoginRequest struct {
 	Email    string `json:"email" form:"email"`
 	Password string `json:"password" form:"password"`
 }
-
+type UpdateRequest struct {
+	Nama     string `json:"name" form:"name"`
+	Email    string `json:"email" form:"email"`
+	Password string `json:"password" form:"password"`
+}
 type UserRequest struct {
 	Nama     string `json:"name" form:"name"`
 	Email    string `json:"email" form:"email"`
 	Password string `json:"password" form:"password"`
+}
+
+func UpdateRequestToUserCore(data UpdateRequest) user.UserEntites {
+	return user.UserEntites{
+		Nama:     data.Nama,
+		Password: data.Password,
+		Email:    data.Email,
+	}
 }
 
 func UserRequestToUserCore(data UserRequest) user.UserEntites {
