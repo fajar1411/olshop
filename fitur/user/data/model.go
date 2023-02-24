@@ -13,7 +13,7 @@ type User struct {
 	Email    string
 }
 
-func FromUserCore(dataCore user.UserEntites) User { //fungsi yang mengambil data dari entities usercore dan merubah data ke user gorm(model.go)
+func FromEntities(dataCore user.UserEntites) User { //fungsi yang mengambil data dari entities usercore dan merubah data ke user gorm(model.go)
 	userGorm := User{
 
 		Email:    dataCore.Email,
