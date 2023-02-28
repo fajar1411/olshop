@@ -63,7 +63,7 @@ func (Ud *PelangganHandler) Update(c echo.Context) error {
 	id := middlewares.ExtractTokenUserId(c)
 
 	formHeader, err := c.FormFile("images")
-	fmt.Print("image handler", formHeader)
+	fmt.Print("image handler", formHeader.Filename)
 	if err != nil {
 		log.Println(err)
 	}
