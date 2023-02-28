@@ -12,19 +12,46 @@ func PesanGagalHelper(msg string) (int, map[string]any) {
 		resp["message"] = msg
 	}
 
-	if strings.Contains(msg, "server") {
+	switch true {
+	case strings.Contains(msg, "server"):
 		code = http.StatusInternalServerError
-	} else if strings.Contains(msg, "format") {
+	case strings.Contains(msg, "format"):
 		code = http.StatusBadRequest
-	} else if strings.Contains(msg, "not found") || strings.Contains(msg, "belum terdaftar") {
+	case strings.Contains(msg, "not found"):
 		code = http.StatusNotFound
-	} else if strings.Contains(msg, "password") {
-		code = http.StatusUnauthorized
-	} else if strings.Contains(msg, "sudah terdaftar") {
+	case strings.Contains(msg, "bad request"):
+		code = http.StatusBadRequest
+	case strings.Contains(msg, "please upload the"):
+		code = http.StatusBadRequest
+	case strings.Contains(msg, "conflict"):
 		code = http.StatusConflict
-	} else if strings.Contains(msg, "required") {
+	case strings.Contains(msg, "duplicated"):
+		code = http.StatusConflict
+	case strings.Contains(msg, "syntax"):
+		code = http.StatusNotFound
+		resp["message"] = "not found"
+	case strings.Contains(msg, "input invalid"):
+		code = http.StatusBadRequest
+	case strings.Contains(msg, "input value"):
+		code = http.StatusBadRequest
+	case strings.Contains(msg, "validation"):
+		code = http.StatusBadRequest
+	case strings.Contains(msg, "unmarshal"):
+		resp["message"] = "failed to unmarshal json"
+		code = http.StatusBadRequest
+	case strings.Contains(msg, "upload"):
+		code = http.StatusInternalServerError
+	case strings.Contains(msg, "denied"):
+		code = http.StatusUnauthorized
+	case strings.Contains(msg, "jwt"):
+		msg = "access is denied due to invalid credential"
+		code = http.StatusUnauthorized
+	case strings.Contains(msg, "Unauthorized"):
+		code = http.StatusUnauthorized
+	case strings.Contains(msg, "empty"):
 		code = http.StatusBadRequest
 	}
+
 	return code, resp
 }
 func PesanSuksesHelper(msg string) map[string]any {

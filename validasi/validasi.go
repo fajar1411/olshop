@@ -31,6 +31,7 @@ func ValidationErrorHandle(err error) string {
 				message = fmt.Sprintf("%s Input Harus Email !!!", v.Field())
 			case "password":
 				message = fmt.Sprintf("%s Input value must be filled", v.Field())
+
 			}
 		}
 	}

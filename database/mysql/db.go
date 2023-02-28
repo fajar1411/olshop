@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"log"
 	"toko/config"
-	user "toko/fitur/user/data"
+	pelanggan "toko/fitur/pelanggan/data"
 
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
@@ -23,6 +23,6 @@ func InitDB(cfg *config.AppConfig) *gorm.DB {
 }
 
 func MigrateDB(db *gorm.DB) {
-	db.AutoMigrate(&user.User{})
+	db.AutoMigrate(&pelanggan.Pelanggan{})
 
 }
