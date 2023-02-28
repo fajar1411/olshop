@@ -2,6 +2,7 @@ package service
 
 import (
 	"errors"
+	"fmt"
 	"log"
 	"mime/multipart"
 	"strings"
@@ -119,19 +120,20 @@ func (Uc *pelangganCase) UpdateUser(id int, fileData *multipart.FileHeader, Upda
 		log.Println("User belum terdaftar")
 	}
 	if fileData != nil {
-		secureURL, err := Uc.hps.Upload(fileData)
-		if err != nil {
-			// log.Println(err)
+		secureURL, err2 := Uc.hps.Upload(fileData)
+		if err2 != nil {
+			log.Println(err2)
+			fmt.Print(err2)
 			var msg string
-			if strings.Contains(err.Error(), "bad request") {
-				msg = err.Error()
+			if strings.Contains(err2.Error(), "bad request") {
+				msg = err2.Error()
 			} else {
 				msg = "failed to upload image, server error"
 			}
 			return pelanggan.PelangganEntites{}, errors.New(msg)
 		}
 		Updata.Image_url = secureURL
-		// fmt.Print("update data image", Updata.Image_url)
+		fmt.Print("update data image", Updata.Image_url)
 	}
 	email := Updata.Email
 	errEmail := Uc.vld.Var(email, "required,email")

@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"mime/multipart"
+	"os"
 	"strings"
 	"time"
 	"toko/config"
@@ -22,7 +23,7 @@ type cloudUpload struct {
 }
 
 func NewCloud(cfg *config.AppConfig) Uploads {
-	clds, err := cloudinary.NewFromParams(cfg.CLOUDINARY_API_KEY, cfg.CLOUDINARY_API_SECRET, cfg.CLOUDINARY_CLOUD_NAME)
+	clds, err := cloudinary.NewFromParams(cfg.CLOUDINARY_CLOUD_NAME, cfg.CLOUDINARY_API_KEY, cfg.CLOUDINARY_API_SECRET)
 
 	if err != nil {
 		log.Println("init cloudinary gagal", err)
@@ -43,13 +44,14 @@ func (cl *cloudUpload) Upload(file *multipart.FileHeader) (string, error) {
 		src,
 		uploader.UploadParams{
 			PublicID: publicID,
-			Folder:   "file",
+			Folder:   os.Getenv("CLOUDINARY_UPLOAD_FOLDER"),
 		})
 	if err != nil {
 		return "", err
 	}
-
+	fmt.Println(uploadResult.SecureURL)
 	return uploadResult.SecureURL, nil
+
 }
 func (cl *cloudUpload) Destroy(publicID string) error {
 	_, err := cl.clds.Upload.Destroy(
