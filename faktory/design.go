@@ -4,17 +4,21 @@ import (
 	"github.com/go-playground/validator/v10"
 	"github.com/labstack/echo/v4"
 
-	userData "toko/fitur/user/data"
-	userService "toko/fitur/user/service"
-	userHandler "toko/routes"
+	"toko/config"
+	pelangganData "toko/fitur/pelanggan/data"
+	pelanganService "toko/fitur/pelanggan/service"
+	"toko/helper"
+	pelangganHandler "toko/routes"
 
 	"gorm.io/gorm"
 )
 
 func InitFactory(e *echo.Echo, db *gorm.DB) {
 	v := validator.New()
-	userRepofaktory := userData.NewUser(db) //menginiasialisasi func new yang ada di repository
-	userServiceFaktory := userService.NewService(userRepofaktory, v)
-	userHandler.NewHandlerUser(userServiceFaktory, e)
+	cfg := config.GetConfig()
+	cld := helper.NewCloud(cfg)
+	userRepofaktory := pelangganData.NewPelanggan(db) //menginiasialisasi func new yang ada di repository
+	userServiceFaktory := pelanganService.NewService(userRepofaktory, v, cld)
+	pelangganHandler.NewHandlerPelanggan(userServiceFaktory, e)
 
 }

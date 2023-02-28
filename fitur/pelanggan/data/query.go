@@ -4,38 +4,40 @@ import (
 	"errors"
 	"log"
 	"strings"
-	"toko/fitur/user"
+
+	pelanggan "toko/fitur/pelanggan"
 
 	"gorm.io/gorm"
 )
 
-type userData struct {
+type pelangganData struct {
 	db *gorm.DB
 }
 
 // Profile implements user.UserData
 
-func NewUser(db *gorm.DB) user.UserData {
-	return &userData{
+func NewPelanggan(db *gorm.DB) pelanggan.PelangganData {
+	return &pelangganData{
 		db: db,
 	}
 }
 
 // Login implements user.UserData
-func (ud *userData) Login(email string) (user.UserEntites, error) {
-	res := User{}
+func (ud *pelangganData) Login(email string) (pelanggan.PelangganEntites, error) {
+	res := Pelanggan{}
 
 	if err := ud.db.Where("email = ?", email).First(&res).Error; err != nil {
 		log.Println("login query error", err.Error())
-		return user.UserEntites{}, errors.New("data not found")
+		return pelanggan.PelangganEntites{}, errors.New("data not found")
 	}
 
 	return ToCore(res), nil
 }
 
 // Register implements user.UserData
-func (Ud *userData) Register(newUser user.UserEntites) (user.UserEntites, error) {
+func (Ud *pelangganData) Register(newUser pelanggan.PelangganEntites) (pelanggan.PelangganEntites, error) {
 	userGorm := FromEntities(newUser)
+	userGorm.Role = "Pelanggan"
 
 	tx := Ud.db.Create(&userGorm) // proses insert data
 
@@ -47,37 +49,42 @@ func (Ud *userData) Register(newUser user.UserEntites) (user.UserEntites, error)
 		} else {
 			msg = "server error"
 		}
-		return user.UserEntites{}, errors.New(msg)
+		return pelanggan.PelangganEntites{}, errors.New(msg)
 	}
 	return newUser, nil
 }
-func (Ud *userData) Profile(id int) (user.UserEntites, error) {
-	var users User
+func (Ud *pelangganData) Profile(id int) (pelanggan.PelangganEntites, error) {
+	var users Pelanggan
 
 	if err := Ud.db.Where("id = ?", id).First(&users).Error; err != nil {
 		log.Println("Get By ID query error", err.Error())
-		return user.UserEntites{}, err
+		return pelanggan.PelangganEntites{}, err
 	}
 	gorms := users.ModelsToCore()
 	return gorms, nil
 }
 
 // UpdateUser implements user.UserData
-func (Ud *userData) UpdateUser(id int, Updata user.UserEntites) (user.UserEntites, error) {
-	var users User
+func (Ud *pelangganData) UpdateUser(id int, Updata pelanggan.PelangganEntites) (pelanggan.PelangganEntites, error) {
+	var users Pelanggan
 	datacore := FromEntities(Updata)
 	qry := Ud.db.Model(&users).Where("id = ?", id).Updates(&datacore)
 
 	affrows := qry.RowsAffected
 	if affrows == 0 {
 		log.Println("no rows affected")
-		return user.UserEntites{}, errors.New("no data updated")
+		return pelanggan.PelangganEntites{}, errors.New("no data updated")
 	}
 	err := qry.Error
 	if err != nil {
 		log.Println("update user query error", err.Error())
-		return user.UserEntites{}, err
+		return pelanggan.PelangganEntites{}, err
 	}
 
 	return ToCore(datacore), nil
+}
+
+// DeleteUser implements user.UserData
+func (Ud *pelangganData) DeleteUser(id int) (pelanggan.PelangganEntites, error) {
+	panic("unimplemented")
 }
